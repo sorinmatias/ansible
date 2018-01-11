@@ -1,0 +1,45 @@
+---
+# tasks file for java
+
+- name: download jdk8 tar file
+  get_url:
+    url: "{{ oracle_jdk_tar_url }}"
+    headers: 'Cookie:oraclelicense=accept-securebackup-cookie'
+    dest: /tmp/{{ oracle_jdk_tar_file }}
+
+- name: unarchive java tar
+  unarchive:
+    src: /tmp/{{ oracle_jdk_tar_file }}
+    dest: /opt
+    copy: no 
+
+- name: Rename jdk directory
+  command: "mv /opt/jdk1.8.0_151 {{ jdk_dir }}"
+
+- name: correct java version selected
+  alternatives:
+    name: java
+    path: /opt/jdk8/bin/java
+    link: /usr/bin/java
+
+- name: correct javac version selected
+  alternatives:
+    name: javac
+    path: /opt/jdk8/bin/javac
+    link: /usr/bin/javac
+
+- name: correct jar version selected
+  alternatives:
+    name: jar
+    path: /opt/jdk8/bin/jar
+    link: /usr/bin/jar
+
+
+- name: correct jre version selected
+  alternatives:
+    name: jre
+    path: /opt/jdk8/jre
+    link: /usr/bin/jre
+ 
+ 
+ 
