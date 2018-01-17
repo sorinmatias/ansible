@@ -1,9 +1,9 @@
 --- #Installing tomcat on a new server
 
-- hosts: aux 
+- hosts: ubuntu 
   connection: ssh
   gather_facts: yes
   sudo: yes
   roles:
-#  - java
+  - java
   - tomcat  

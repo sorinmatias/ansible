@@ -1,0 +1,11 @@
+# Ansible role for Lamp with 
+# Current stable MariaDB
+# Current stable PHP
+# Apache server 
+
+- hosts: aux
+  gather_facts: yes
+  sudo: yes
+  connection: ssh
+  roles:
+  - mariadb

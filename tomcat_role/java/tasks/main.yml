@@ -1,45 +1,34 @@
 ---
 # tasks file for java
 
-- name: download jdk8 tar file
-  get_url:
-    url: "{{ oracle_jdk_tar_url }}"
-    headers: 'Cookie:oraclelicense=accept-securebackup-cookie'
-    dest: /tmp/{{ oracle_jdk_tar_file }}
+- name: Set JRE version
+  shell:  'curl -s https://java.com/en/download/linux_manual.jsp | grep "Recommended Version" | cut -d " " -f 4'
+  register: java_version
+  
+- name: Set JRE update
+  shell: 'curl -s https://java.com/en/download/linux_manual.jsp | grep "Recommended Version" | cut -d " " -f 6 | cut -d "<" -f 1'
+  register: java_update
 
+- name: Set JRE download link
+  shell: 'curl -s https://java.com/en/download/linux_manual.jsp | grep "Download Java software for Linux x64" | cut -d "\"" -f 4 | head -1'
+  register: java_tar_url
+
+- name: download jre tar file
+  get_url:
+    url: "{{ java_tar_url.stdout }}"
+    dest: /tmp/{{ java_tar_file }}
+#
 - name: unarchive java tar
   unarchive:
-    src: /tmp/{{ oracle_jdk_tar_file }}
+    src: /tmp/{{ java_tar_file }}
     dest: /opt
     copy: no 
 
-- name: Rename jdk directory
-  command: "mv /opt/jdk1.8.0_151 {{ jdk_dir }}"
+- name: Rename jar directory
+  command: "mv /opt/jre1.{{java_version.stdout}}.0_{{ java_update.stdout}} {{ java_dir }}"
 
 - name: correct java version selected
   alternatives:
     name: java
-    path: /opt/jdk8/bin/java
+    path: /opt/jre/bin/java
     link: /usr/bin/java
-
-- name: correct javac version selected
-  alternatives:
-    name: javac
-    path: /opt/jdk8/bin/javac
-    link: /usr/bin/javac
-
-- name: correct jar version selected
-  alternatives:
-    name: jar
-    path: /opt/jdk8/bin/jar
-    link: /usr/bin/jar
-
-
-- name: correct jre version selected
-  alternatives:
-    name: jre
-    path: /opt/jdk8/jre
-    link: /usr/bin/jre
- 
- 
- 

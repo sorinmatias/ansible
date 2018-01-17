@@ -1,6 +1,7 @@
 ---
 # vars file for java
 
-jdk_dir: /opt/jdk8
-oracle_jdk_tar_file: jdk-8u151-linux-x64.tar.gz
-oracle_jdk_tar_url:  http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz
+java_dir: /opt/jre
+java_version:
+java_update:
+java_tar_file: jre-{{ java_version.stdout }}u{{ java_update.stdout }}-linux-x64.tar.gz

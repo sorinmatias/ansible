@@ -1,6 +1,6 @@
 ---
 # vars file for tomcat
-
-tomcat_dir: /opt/tomcat
-tomcat_tar_file: apache-tomcat-8.5.24.tar.gz
-tomcat_tar_url: http://mirrors.m247.ro/apache/tomcat/tomcat-8/v8.5.24/bin/apache-tomcat-8.5.24.tar.gz
+#tomcat_version: ""
+tomcat_dir: /opt/tomcat-{{ tomcat_version.stdout }}
+tomcat_tar_file: apache-tomcat-{{ tomcat_version.stdout}}.tar.gz
+#tomcat_tar_url: http://mirrors.m247.ro/apache/tomcat/tomcat-{{ tomcat_input }}/v{{ tomcat_version.stdout}}/bin/apache-tomcat-{{ tomcat_version.stdout }}.tar.gz

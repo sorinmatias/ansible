@@ -1,0 +1,7 @@
+---
+# tasks file for mariadb
+
+- name: Get current stable MariaDB version
+  shell: 'curl -s https://downloads.mariadb.org/ | grep "current" | grep stable | sed "s/\s\s*/ /g" | cut -d" " -f 3'
+  register: mariadb_version
+- debug: msg= "{{ mariadb_version}}"

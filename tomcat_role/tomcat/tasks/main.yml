@@ -1,11 +1,45 @@
 ---
 # tasks file for tomcat
+# curl -s https://en.wikipedia.org/wiki/Apache_Tomcat | grep -A1 "Stable release" |tail -1 | cut -d">" -f 2 | cut -d"<" -f 1
+# curl -s https://tomcat.apache.org/download-90.cgi | grep -A15 "Core" | grep "tomcat-9/v9.0" | grep "tar.gz" | cut -d '"' -f 2 | head -1
+# curl -s https://tomcat.apache.org/download-80.cgi | grep -A15 "Core" | grep "tomcat-8/v8.0" | grep "tar.gz" | cut -d '"' -f 2 | head -1
+# curl -s https://tomcat.apache.org/download-70.cgi | grep -A15 "Core" | grep "tomcat-7/v7.0" | grep "tar.gz" | cut -d '"' -f 2 | head -1
 
+
+- name: Latest tomcat version
+  shell: 'curl -s https://en.wikipedia.org/wiki/Apache_Tomcat | grep -A1 "Stable release" |tail -1 | cut -d">" -f 2 | cut -d"<" -f 1 | cut -d " " -f 1'
+  register: tomcat_version
+
+#- name: Set tomcat version to stable release
+#  set_facts: tomcat_version={{tomcat_latest.stdout}}
+#  when: tomcat_version is undefined
+
+#  when: (tomcat_version!=9) or (tomcat_version!=8)
+#  when: (not tomcat_version==7) or (tomcat_version is undefined) or (not tomcat_version==9) or (not tomcat_version==8) or (not tomcat_version==8.5)
+
+#- name: Set tomcat version to stable release
+#  set_facts: tomcat_version={{tomcat_latest.stdout}}
+#  when: tomcat_version==8.5
+
+#- name: Display user input  
+#  debug: msg={{ tomcat_version }}
+
+#- name: Set tomcat version
+#  shell: "curl -s http://svn.apache.org/repos/asf/tomcat/site/trunk/docs/doap_Tomcat.rdf | grep -A2 'Latest Stable {{ tomcat_input }}' | cut -f2 -d '>' | cut -f1 -d '<' |tail -1"
+#  register: tomcat_version
+
+- name: Set tomcat url
+  shell: 'curl -s https://tomcat.apache.org/download-80.cgi | grep -A15 "Core" | grep "tomcat-8/v8.5" |  grep "tar.gz" | cut -d "\"" -f 2 | head -1'
+  register: tomcat_tar_url
+
+#- name: Display tomcat version
+#  debug: msg={{ tomcat_version.stdout }}
+#
 - name: download tomcat tar file
   get_url:
-    url: "{{ tomcat_tar_url }}"
+    url: "{{ tomcat_tar_url.stdout }}"
     dest: /tmp/{{ tomcat_tar_file }}
-
+#
 - name: unarchive java tar
   unarchive:
     src: /tmp/{{ tomcat_tar_file }}
@@ -13,7 +47,7 @@
     copy: no 
 
 - name: Rename tomcat directory
-  command: "mv /opt/apache-tomcat-8.5.24 {{ tomcat_dir }}"
+  command: "mv /opt/apache-tomcat-{{ tomcat_version.stdout}} {{ tomcat_dir }}"
 
 - name: Create tomcat group
   group:
@@ -26,6 +60,7 @@
     group: tomcat
     shell: /bin/false
     home: /opt/tomcat
+
 - name: Tomcat dir ownership
   file:
     state: directory
@@ -33,6 +68,7 @@
     owner: tomcat
     group: tomcat
     recurse: yes
+
 - name: Give tomcat read and execute access to conf directory
   file:
     state: directory
@@ -52,6 +88,3 @@
     enabled: yes
     state: started
     daemon_reload: yes
-
-
-
