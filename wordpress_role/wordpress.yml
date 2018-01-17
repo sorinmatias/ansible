@@ -1,0 +1,9 @@
+--- # Wordpress role
+
+- hosts: aux
+  connection: ssh
+  gather_facts: yes
+  roles:
+#  - pre_install
+  - wordpress
+

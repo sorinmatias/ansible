@@ -1,0 +1,14 @@
+# wordpress handlers
+---
+
+- name: StartEnableHttpd
+  service: name=httpd state=restarted enabled=yes
+    
+- name: StartEnableMariaDB
+  service: name=mariadb state=restarted enabled=yes
+
+- name: RestartHttpd
+  service: name=htppd state=restarted
+
+- name: RestartMariaDB
+  service: name=mariadb state=restarted

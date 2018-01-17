@@ -1,0 +1,48 @@
+--- 
+
+#- name: Install required software
+#  package:
+#    name: "{{ item }}"
+#    state: latest
+#  with_items:
+#    - httpd
+#    - mariadb
+#    - mariadb-server
+#    - php
+#    - php-mysql
+#    - php-mcrypt
+#    - MySQL-python
+#
+#  notify:
+#  - StartEnableHttpd
+#  - StartEnableMariaDB
+
+- name: Set root Password for ansible_fqdn
+  mysql_user: name=root host="{{ ansible_fqdn}}" password={{ root_password }} state=present
+
+- name: Set root Password for localhost
+  mysql_user: login_user=root login_password="" name=root host=localhost password="{{ root_password }}" state=present
+- name: Set root Password for 127.0.0.1
+  mysql_user: login_user=root login_password="{{ root_password }}" name=root host=127.0.0.1 password="{{ root_password }}" state=present
+- name: Set root Password for ::1
+  mysql_user: login_user=root login_password="{{ root_password }}" name=root host=::1 password="{{ root_password }}" state=present
+
+- name: Deletes anonymous MySQL server user
+  mysql_user: login_user=root login_password="{{ root_password }}" user="" host=localhost state="absent"
+
+- name: Deletes anonymous MySQL server user for localhost
+  mysql_user: login_user=root login_password="{{ root_password }}" user="" state="absent"
+
+#- name: Secures the MySQL root user
+#  mysql_user: user="root" password="{{ mysql_root_password }}" host="{{ item }}"
+#  with_items:
+#    - localhost
+#    - 127.0.0.1
+#    - ::1
+#    - ansible_fqdn
+#
+#
+- name: Removes the MySQL test database
+  mysql_db: login_user=root login_password="{{ root_password }}" db=test state=absent
+
+

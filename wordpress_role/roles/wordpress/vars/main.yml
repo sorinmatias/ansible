@@ -1,0 +1,6 @@
+#Vars for wordpress role
+---
+
+root_password : 123456
+ansible_fqdn: 172.22.150.151
+
