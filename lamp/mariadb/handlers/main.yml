@@ -1,2 +1,8 @@
 ---
 # handlers file for mariadb
+
+- name: StartEnableMariaDB
+  service:
+    name: mariadb
+    state: started
+    enable: yes

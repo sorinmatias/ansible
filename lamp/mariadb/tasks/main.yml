@@ -4,4 +4,18 @@
 - name: Get current stable MariaDB version
   shell: 'curl -s https://downloads.mariadb.org/ | grep "current" | grep stable | sed "s/\s\s*/ /g" | cut -d" " -f 3'
   register: mariadb_version
-- debug: msg= "{{ mariadb_version}}"
+
+- name: Create MariadB.repo
+  template:
+    src: templates/MariaDB.repo.j2
+    dest: /etc/yum.repos.d/MariaDB.repo
+
+- name: install Mariadb-server using yum
+  yum: name=MariaDB-server  state=latest
+  notify:
+  - StartEnableMariaDB
+
+- name: install Mariadb-client using yum
+  yum: name=MariaDB-client  state=latest
+
+- debug: msg={{ mariadb_version.stdout }}
